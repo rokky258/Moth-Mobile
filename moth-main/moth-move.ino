@@ -11,12 +11,7 @@ int base_speed = 150;
 int w_left = L298N::MOTOR_A;
 int w_right = L298N::MOTOR_B;
 
-void setup()
-{
-
-}
-
-void loop()
+void run_movement_test()
 {
    drive_at_angle(1.57,base_speed);
   delay(2000);
