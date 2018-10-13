@@ -27,7 +27,7 @@ void run_movement_test()
   delay(10000);
 }
 
-void drive_at_angle(double rad_angle,sp){
+void drive_at_angle(double rad_angle,double sp){
    double mapped_val = (sp/ PI) * rad_angle; 
    set_wheel(w_left, mapped_val);
    set_wheel(w_right, sp - mapped_val);
