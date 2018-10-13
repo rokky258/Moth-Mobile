@@ -1,15 +1,16 @@
-#include <L298N.h>
-const int ENA = 10;
-const int IN1 = 9;
-const int IN2 = 8;
-const int IN3 = 7;
-const int IN4 = 6;
-const int ENB = 5;
-L298N driver(ENA,IN1,IN2,IN3,IN4,ENB); 
+
+#define ENA 10
+#define IN1A 9
+#define IN2A 8
+#define ENB 5
+#define IN1B 7
+#define IN2B 6
+
+L298N motorA(ENA, IN1A, IN2A);
+L298N motorB(ENB, IN1B, IN2B);
+
 int time_delay = 500;
-int base_speed = 150;
-int w_left = L298N::MOTOR_A;
-int w_right = L298N::MOTOR_B;
+int base_speed = 70;
 
 void run_movement_test()
 {
@@ -23,21 +24,22 @@ void run_movement_test()
   delay(2000);
   drive_at_angle(1.57,base_speed);
   delay(2000);
-  driver.full_stop();
+  motorA.stop();
+  motorB.stop();
   delay(10000);
 }
 
 void drive_at_angle(double rad_angle,double sp){
    double mapped_val = (sp/ PI) * rad_angle; 
-   set_wheel(w_left, mapped_val);
-   set_wheel(w_right, sp - mapped_val);
+   set_wheel(motorA, mapped_val);
+   set_wheel(motorB, sp - mapped_val);
 }
 
-int set_wheel(int motor, int speed) {
-  if (speed > 0){
-    driver.setup_motor(motor,HIGH,LOW);
+int set_wheel(L298N motor, int sp) {
+  if (sp > 0){
+    motor.forward();
   } else {
-    driver.setup_motor(motor,LOW,HIGH);
+    motor.backward();
   }
-  driver.drive_motor(motor,speed);
+  motor.setSpeed(sp);
 }
