@@ -1,10 +1,10 @@
 #include <L298N.h>
-const int ENA = 6;
-const int IN1 = 8;
-const int IN2 = 7;
-const int IN3 = 2;
-const int IN4 = 4;
-const int ENB = 3;
+const int ENA = 10;
+const int IN1 = 9;
+const int IN2 = 8;
+const int IN3 = 7;
+const int IN4 = 6;
+const int ENB = 5;
 L298N driver(ENA,IN1,IN2,IN3,IN4,ENB); 
 int time_delay = 500;
 int base_speed = 150;
