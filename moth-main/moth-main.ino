@@ -1,5 +1,6 @@
 #include <L298N.h>
 
+// Initialize Motors
 #define ENA 10
 #define IN1 9
 #define IN2 8
@@ -9,60 +10,86 @@
 L298N motorA(ENA, IN1, IN2);
 L298N motorB(ENB, IN3, IN4);
 
-// put your setup code here, to run once:
-int sensorPins[] = {A5, A4, A3, A2}; // select the input pin for the potentiometer
+// Set array of sensor pins
+// A5 Front, A4 Back, A3 Left, A2 Right
+int sensorPins[] = {A5, A4, A3, A2};
 
-//A5 Front, A4 Back, A3 Left, A2 Right
-int ledPin = 13; // select the pin for the LED
-int sensorValues[] = {0,0,0,0}; // vasriable to store the value coming from the sensor
-
+// Set value of sensors
 int front = 0;
 int back = 0;
 int left = 0;
 int right = 0;
 
+// Direction movement
 double xDirection, yDirection = 0;
 
+#define base_speed 80
 
 void setup() {
-  // Test Values
-  front = 10;
+
+  // Set up motor speed
   motorA.setSpeed(80); // an integer between 0 and 255
   motorB.setSpeed(80);
   Serial.begin(9600);
-  //run_movement_test();
 }
 
 
 void loop() {
+  // Get Value Of Light Sensors
   front = 1000 - analogRead(A5);
   back = 1000 - analogRead(A4);
-  //left = 1000 - analogRead(A3);
-  //right = 1000 - analogRead(A2);
-  if (front >= back) {
-    motorA.forward();
-    motorB.forward();  
-  } else {
-    motorA.backward();
-    motorB.backward();
-  }
+  left = 1000 - analogRead(A3);
+  right = 1000 - analogRead(A2);
+  testCalculateDirection(front, back, left, right);
+  delay(5000);
 }
 
-void testCalculateDirection() {
+void testCalculateDirection(int front, int back, int left, int right) {
+ /*
   Serial.print("up:");
-  Serial.println(sensorValues[0]);
+  Serial.println(front);
   Serial.print("down:");
-  Serial.println(sensorValues[1]);
+  Serial.println(back);
   Serial.print("left:");
-  Serial.println(sensorValues[2]);
+  Serial.println(left);
   Serial.print("right:");
-  Serial.println(sensorValues[3]);
+  Serial.println(right);
+  */
+  drive_at_angle(calculateDirection(front, back, left, right), 60);
+  drive_at_angle(1.57,base_speed);
   delay(2000);
-  Serial.println(calculateDirection(sensorValues[0],sensorValues[1],sensorValues[2],sensorValues[3]), DEC);
+  drive_at_angle(0.85,base_speed);
+  delay(2000);
+  drive_at_angle(0,base_speed);
+  delay(2000);
+  drive_at_angle(0.85,base_speed);
+  delay(2000);
+  drive_at_angle(1.57,base_speed);
+//  delay(2000);
+  delay(2000);
 }
 
 double calculateDirection(int up, int down, int left, int right){
   yDirection = up - down;
   xDirection = right - left;
   return(atan2(yDirection,xDirection));
+}
+
+
+void drive_at_angle(double rad_angle, double sp){
+   double mapped_val = (sp / PI) * rad_angle; 
+   Serial.print(mapped_val);
+   Serial.print(" : "); 
+   set_wheel(motorA, mapped_val);
+   Serial.println(sp - mapped_val);
+   set_wheel(motorB, sp - mapped_val);
+}
+
+int set_wheel(L298N motor, int sp) {
+  if (sp >= 0){
+    motor.forward();
+  } else {
+    motor.backward();
+  }
+  motor.setSpeed(sp);
 }
