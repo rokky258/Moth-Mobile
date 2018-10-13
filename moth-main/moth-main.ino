@@ -15,6 +15,9 @@ void loop() {
   for (int i = 0; i < 4; i ++) {
     sensorValues[i] = 1000 - analogRead(sensorPins[i]);
   }
+}
+
+void testCalculateDirection() {
   Serial.print("up:");
   Serial.println(sensorValues[0]);
     Serial.print("down:");
