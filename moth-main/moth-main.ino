@@ -1,4 +1,4 @@
-
+#include <L298N.h>
   // put your setup code here, to run once:
 int sensorPins[] = {A5,A4,A3,A2}; // select the input pin for the potentiometer
 //A5 Front, A4 Back, A3 Left, A2 Right
