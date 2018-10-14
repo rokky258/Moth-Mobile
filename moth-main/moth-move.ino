@@ -5,6 +5,7 @@ const int IN2 = 7;
 const int IN3 = 2;
 const int IN4 = 4;
 const int ENB = 3;
+int blk = 0;
 L298N driver(ENA,IN1,IN2,IN3,IN4,ENB); 
 int time_delay = 500;
 int base_speed = 300;
@@ -40,15 +41,15 @@ void drive_at_angle(double angle, double sp){
 //    rad_angle -= PI / 2;
 //   }
 Serial.print("Angle: ");
-   Serial.println(angle);
+   Serial.println(deg(angle));
       if (angle < 0) {
-        angle = (M_PI*2) + angle;
+        angle = (PI*2) + angle;
       }
 
-      if (angle > 2.987 && angle <= 2*PI/3){
-        angle = 2.987;
-      } else if (angle < 0.524 || angle > (3*PI)/2){
-        angle = 0.524;
+      if (angle > rad(135) && angle <= rad(270)){
+        angle = rad(135);
+      } else if (angle < rad(45) || angle > rad(270)){
+        angle = rad(45);
       }
    //int real_speed = sp * (angle / (PI / 2));
    
@@ -63,6 +64,17 @@ Serial.print("Angle: ");
    Serial.println(sp - mapped_val);
    set_wheel(w_right, mapped_val);
    set_wheel(w_left, sp - mapped_val);
+   if (random(0,200)>180){
+      blk = 2;
+   }
+   blk --;
+   if (blk > 0){
+     digitalWrite(12, LOW);
+  digitalWrite(13, LOW);
+   } else {
+     digitalWrite(12, HIGH);
+  digitalWrite(13, HIGH);
+   }
 }
 
 int set_wheel(int motor, int speed) {
@@ -71,5 +83,9 @@ int set_wheel(int motor, int speed) {
   } else {
     driver.setup_motor(motor,LOW,HIGH);
   }
+  if (speed < 50)
+    speed = 50;
+   if (speed > base_speed)
+    speed = base_speed;
   driver.drive_motor(motor,speed);
 }

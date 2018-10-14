@@ -15,6 +15,9 @@ double xDirection, yDirection = 0;
 
 void setup() {
   Serial.begin(9600);
+    pinMode(12, OUTPUT);
+      pinMode(13, OUTPUT);
+ 
 }
 
 
@@ -24,10 +27,14 @@ void loop() {
   back = 1000 - analogRead(A4);
   left = 1000 - analogRead(A3);
   right = 1000 - analogRead(A2);
+  Serial.println("Front, Back, Left, Right");
+  Serial.println(front);
+  Serial.println(back);
+  Serial.println(left);
+  Serial.println(right);
 
  // testCalculateDirection(front, back, left, right);
-  drive_at_angle(calculateDirection(front,back,left,right),150);
-  delay(1000);
+  drive_at_angle(calculateDirection(front,back,left,right),300);
 }
 
 void testCalculateDirection(int front, int back, int left, int right) {
